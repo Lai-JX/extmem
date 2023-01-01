@@ -30,6 +30,7 @@ Buffer buf; /* A buffer */
 int test(void);
 int linearSearch(void);
 int tpmms(void);
+int indexSearch(void);
 
 /******************************/
 /*工具函数*/
@@ -39,5 +40,6 @@ int write4bytes(unsigned char *, int);
 void write8bytes(unsigned char *, unsigned char *);
 void BubbleSort(unsigned char *, int);
 int findAddr(int, int);
+void printf1(int, int);
 
 #endif // DEF_H_INCLUDED

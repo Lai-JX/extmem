@@ -125,3 +125,20 @@ void BubbleSort(unsigned char *A,int n) // n=504
             return;
     }
 }
+// 输出块号为addr后的n个块（方便debug）
+void printf1(int addr, int n)
+{
+    unsigned char *blk;
+    for (int i = 0; i < n; i++)
+    {
+        printf("block %d\n", findAddr(addr, i));
+        blk = readBlockFromDisk(findAddr(addr,i), &buf);
+        for (int k = 0; k < 64; k+=8)
+        {
+            printf("(%d,%d)\n",read4bytes(blk+k),read4bytes(blk+4+k));
+        }
+
+        freeBlockInBuffer(blk, &buf);
+    }
+    
+}

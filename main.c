@@ -7,8 +7,9 @@
 int main(int argc, char **argv)
 {
     // test();
-    // linearSearch();
-    tpmms();
+    linearSearch();
+    // tpmms();
+    indexSearch();
     return 0;
 }
 

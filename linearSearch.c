@@ -87,11 +87,18 @@ int linearSearch(void)
     }
     // 写回最后一个结果块
     if (amount !=0)
-        writeBlockToDisk(result_blk, result_addr + amount / NUM_PER_BLK, &buf);
+    {
+        if(amount % NUM_PER_BLK == 0)
+            writeBlockToDisk(result_blk, result_addr + amount / NUM_PER_BLK-1, &buf);
+        else
+            writeBlockToDisk(result_blk, result_addr + amount / NUM_PER_BLK, &buf);
+    }
+        
 
 
     printf("注：结果写入磁盘：%d\n\n", result_addr);
     printf("满足选择条件的元组一共有%d个\n\n", amount);
     printf("IO读写一共%d次\n\n",buf.numIO);
+    // printf1(60, 2);
     freeBuffer(&buf);
 }

@@ -20,17 +20,17 @@ void tpmms_(int BLK_BEGIN, int BLK_NUM, int step, int res_addr_begin)
 {
     int addr = BLK_BEGIN;
     // 1. 分组排序
-    for (int i = BLK_BEGIN; i < BLK_BEGIN + BLK_NUM; i+=step)
+    for (int i = 0; i < BLK_NUM; i+=step)
     {
         tpmms_step1(addr, step);
         addr = findAddr(addr, step);
     }
-    // printf1(BLK_BEGIN, BLK_NUM);
+    printf1(BLK_BEGIN, BLK_NUM);
     // 2. 归并
     int tol_set_num = BLK_NUM / step;     // 子集个数
     tpmms_step2(BLK_BEGIN, step, tol_set_num, res_addr_begin);
 
-    // printf1(res_addr_begin, BLK_NUM);
+    printf1(res_addr_begin, BLK_NUM);
 }
 
 
@@ -157,20 +157,5 @@ void tpmms_step2(int addr, int set_num, int tol_set_num, int res_addr_begin)
         freeBlockInBuffer(blk[i], &buf);
 }
 
-void printf1(int addr, int n)
-{
-    unsigned char *blk;
-    for (int i = 0; i < n; i++)
-    {
-        printf("block %d\n", findAddr(addr, i));
-        blk = readBlockFromDisk(findAddr(addr,i), &buf);
-        for (int k = 0; k < 64; k+=8)
-        {
-            printf("%d\n",read4bytes(blk+k));
-        }
 
-        freeBlockInBuffer(blk, &buf);
-    }
-    
-}
 
