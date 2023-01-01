@@ -1,21 +1,21 @@
 
 #include "def.h"
 
-int lab5_all(void)
-{
+// int lab5_all(void)
+// {
 
-    printf("ljx\n");
-    /* Initialize the buffer */
-    if (!initBuffer(520, 64, &buf))
-    {
-        perror("Buffer Initialization Failed!\n");
-        return -1;
-    }
-    printf("data_begin:%p\n", buf.data);
+//     printf("ljx\n");
+//     /* Initialize the buffer */
+//     if (!initBuffer(520, 64, &buf))
+//     {
+//         perror("Buffer Initialization Failed!\n");
+//         return -1;
+//     }
+//     printf("data_begin:%p\n", buf.data);
 
-    linearSearch();
-    return 0;
-}
+//     linearSearch();
+//     return 0;
+// }
 
 int linearSearch(void)
 {
@@ -59,7 +59,6 @@ int linearSearch(void)
             // 是否为指定元组
             if (C == 128)
             {
-                printf("(C=%d, D=%d) \n", C, D);
                 idx = amount % NUM_PER_BLK;
                 // 内存块写满
                 if (amount !=0 && idx == 0 )
@@ -70,10 +69,12 @@ int linearSearch(void)
                     write4bytes(result_blk + 8 * NUM_PER_BLK, next);
                     // 写回磁盘
                     writeBlockToDisk(result_blk, next-1, &buf);
+                    printf("注：结果写入磁盘：%d\n", next-1);
                     // 申请缓冲区
                     result_blk = getNewBlockInBuffer(&buf);
                 }
                 write8bytes(result_blk + 8 * idx, blk + i * 8);
+                printf("(C=%d, D=%d) \n", C, D);
                 amount++;
             }
 
@@ -88,15 +89,15 @@ int linearSearch(void)
     // 写回最后一个结果块
     if (amount !=0)
     {
-        if(amount % NUM_PER_BLK == 0)
-            writeBlockToDisk(result_blk, result_addr + amount / NUM_PER_BLK-1, &buf);
-        else
-            writeBlockToDisk(result_blk, result_addr + amount / NUM_PER_BLK, &buf);
+        next = result_addr + amount / 7;
+        if (amount % NUM_PER_BLK == 0)
+            next--;
+        writeBlockToDisk(result_blk, next, &buf);
+        printf("注：结果写入磁盘：%d\n\n", next);
     }
         
 
 
-    printf("注：结果写入磁盘：%d\n\n", result_addr);
     printf("满足选择条件的元组一共有%d个\n\n", amount);
     printf("IO读写一共%d次\n\n",buf.numIO);
     // printf1(60, 2);

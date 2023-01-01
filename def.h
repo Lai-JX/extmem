@@ -31,6 +31,9 @@ int test(void);
 int linearSearch(void);
 int tpmms(void);
 int indexSearch(void);
+int sortMergeJoin(void);
+int sortMergeIntersection(void);
+int sortMergeUnion(void);
 
 /******************************/
 /*工具函数*/

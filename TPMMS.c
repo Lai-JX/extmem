@@ -25,12 +25,12 @@ void tpmms_(int BLK_BEGIN, int BLK_NUM, int step, int res_addr_begin)
         tpmms_step1(addr, step);
         addr = findAddr(addr, step);
     }
-    printf1(BLK_BEGIN, BLK_NUM);
+    // printf1(BLK_BEGIN, BLK_NUM);
     // 2. 归并
     int tol_set_num = BLK_NUM / step;     // 子集个数
     tpmms_step2(BLK_BEGIN, step, tol_set_num, res_addr_begin);
 
-    printf1(res_addr_begin, BLK_NUM);
+    // printf1(res_addr_begin, BLK_NUM);
 }
 
 
@@ -84,7 +84,7 @@ void tpmms_step2(int addr, int set_num, int tol_set_num, int res_addr_begin)
     // printf("tol_set_num:%d\n", tol_set_num);
 
     int set_ptr[tol_set_num];           // 每个组最小值的指针
-    int visited_blk[tol_set_num];       // 每组已访问块数
+    int visited_blk[tol_set_num];       // 每组已访问块数-1
     int cur_val = 0;
     int min_val = 999;              // 当前最小值
     int min_idx = 0;                // 最小值所在的组

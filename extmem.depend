@@ -28,16 +28,16 @@
 
 1672482198 source:d:\hgs-3-1\db\lab\db5\extmem-c\lab5_util.c
 
-1672562969 source:d:\hgs-3-1\db\lab\db5\extmem-c\main.c
+1672593347 source:d:\hgs-3-1\db\lab\db5\extmem-c\main.c
 	<stdlib.h>
 	<stdio.h>
 	"extmem.h"
 	"def.h"
 
-1672556980 source:d:\hgs-3-1\db\lab\db5\extmem-c\linearsearch.c
+1672593892 source:d:\hgs-3-1\db\lab\db5\extmem-c\linearsearch.c
 	"def.h"
 
-1672557113 d:\hgs-3-1\db\lab\db5\extmem-c\def.h
+1672584354 d:\hgs-3-1\db\lab\db5\extmem-c\def.h
 	<stdlib.h>
 	<stdio.h>
 	<stdbool.h>
@@ -46,9 +46,18 @@
 1672560587 source:d:\hgs-3-1\db\lab\db5\extmem-c\util.c
 	"def.h"
 
-1672557115 source:d:\hgs-3-1\db\lab\db5\extmem-c\tpmms.c
+1672564696 source:d:\hgs-3-1\db\lab\db5\extmem-c\tpmms.c
 	"def.h"
 
-1672560532 source:d:\hgs-3-1\db\lab\db5\extmem-c\indexsearch.c
+1672593771 source:d:\hgs-3-1\db\lab\db5\extmem-c\indexsearch.c
+	"def.h"
+
+1672585311 source:d:\hgs-3-1\db\lab\db5\extmem-c\sortmergejoin.c
+	"def.h"
+
+1672588548 source:d:\hgs-3-1\db\lab\db5\extmem-c\sortmergeintersection.c
+	"def.h"
+
+1672593330 source:d:\hgs-3-1\db\lab\db5\extmem-c\sortmergeunion.c
 	"def.h"
 

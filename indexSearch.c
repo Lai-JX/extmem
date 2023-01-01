@@ -104,6 +104,7 @@ int indexSearch(void)
                         write4bytes(res_blk + 8 * NUM_PER_BLK, next);
                         // 写回磁盘
                         writeBlockToDisk(res_blk, next-1, &buf);
+                        printf("注：结果写入磁盘：%d\n", next-1);
                         // 申请缓冲区
                         res_blk = getNewBlockInBuffer(&buf);
                     }
@@ -127,16 +128,16 @@ int indexSearch(void)
             // 写回最后一个结果块
             if (count !=0)
             {
-                if(count % NUM_PER_BLK == 0)
-                    writeBlockToDisk(res_blk, res_addr + count / NUM_PER_BLK-1, &buf);
-                else
-                    writeBlockToDisk(res_blk, res_addr + count / NUM_PER_BLK, &buf);
+                next = res_addr + count / NUM_PER_BLK;
+                if (count % 7 == 0)
+                    next--;
+                writeBlockToDisk(res_blk, next, &buf);
+                printf("注：结果写入磁盘：%d\n\n", next);
             }
             freeBlockInBuffer(blk, &buf);
             break;
         } 
     }
-    printf("注：结果写入磁盘：%d\n\n", res_addr);
     printf("满足选择条件的元组一共有%d个\n\n", count);
     printf("IO读写一共%d次\n\n",buf.numIO);
     // printf1(250, 2);
@@ -183,11 +184,11 @@ int createIndexBlk(int addr, int blk_num, int index_addr_begin)
     // 写回最后一个索引块
     if (i !=0)
     {
-        if (i % NUM_PER_BLK == 0)
-            writeBlockToDisk(index_blk, index_addr_begin + i / NUM_PER_BLK - 1, &buf);
-        else
-            writeBlockToDisk(index_blk, index_addr_begin + i / NUM_PER_BLK, &buf);
+        int next = index_addr_begin + i / 7;
+        if (i % 7 == 0)
+            next--;
+        writeBlockToDisk(index_blk, next, &buf);
+        // printf("注：结果写入磁盘：%d\n\n", next);
     }
-    printf("create :%d\n", buf.numIO);
     return count;
 }

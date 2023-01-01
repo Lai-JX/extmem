@@ -39,10 +39,22 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="extmem.h" />
+		<Unit filename="indexSearch.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="linearSearch.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="sortMergeIntersection.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="sortMergeJoin.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="sortMergeUnion.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="test.c">
