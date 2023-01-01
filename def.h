@@ -14,6 +14,9 @@
 #define R_BLK_NUM 16
 #define S_BLK_NUM 32
 #define NUM_PER_BLK 7       // 一块有7个元组
+#define R_SORT_BLK_BEGIN 100    // 排序后的R的初始块号
+#define S_SORT_BLK_BEGIN 150    // 排序后的S的初始块号
+#define BLKS_PER_SET 8          // 每个子集的块数
 
 /******************************/
 /* 全局变量 */
@@ -34,7 +37,7 @@ int tpmms(void);
 int read4bytes(unsigned char *);
 int write4bytes(unsigned char *, int);
 void write8bytes(unsigned char *, unsigned char *);
-void QuickSort(unsigned char *, int, int);
+void BubbleSort(unsigned char *, int);
 int findAddr(int, int);
 
 #endif // DEF_H_INCLUDED

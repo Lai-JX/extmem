@@ -63,30 +63,65 @@ int findAddr(int addr, int n)
     return addr;
 }
 
-int Partition1(unsigned char* A,int low,int high)
+// int Partition1(unsigned char* A,int low,int high)
+// {
+//     int pivotpos1 = read4bytes(A + low);
+//     int pivotpos2 = read4bytes(A + low + 4);
+//     // printf("pivotpos:%d\n", pivotpos);
+//     while(low<high)
+//     {
+//         // printf("low:%d\n", low);
+//         while(low<high && read4bytes(A+high)>=pivotpos1)high -= 8;
+//         write8bytes(A+low, A+high);
+//         while(low<high && read4bytes(A+low)<=pivotpos1)low += 8;
+//         write8bytes(A+high, A+low);
+//     }
+//     write4bytes(A+low, pivotpos1);
+//     write4bytes(A + low + 4, pivotpos2);
+//     return low;
+// }
+// void QuickSort(unsigned char *A,int low,int high)
+// {
+//     if(low<high)
+//     {
+//         int pivotpos = Partition1(A,low,high);
+//         // printf("index:%d", pivotpos);
+//         QuickSort(A,low,pivotpos-8);
+//         QuickSort(A,pivotpos+8,high);
+//     }
+// }
+void Swap(unsigned char *a,unsigned char *b)
 {
-    int pivotpos1 = read4bytes(A + low);
-    int pivotpos2 = read4bytes(A + low + 4);
-    // printf("pivotpos:%d\n", pivotpos);
-    while(low<high)
-    {
-        // printf("low:%d\n", low);
-        while(low<high && read4bytes(A+high)>=pivotpos1)high -= 8;
-        write8bytes(A+low, A+high);
-        while(low<high && read4bytes(A+low)<=pivotpos1)low += 8;
-        write8bytes(A+high, A+low);
-    }
-    write4bytes(A+low, pivotpos1);
-    write4bytes(A + low + 4, pivotpos2);
-    return low;
+    unsigned char temp[8];
+    write8bytes(temp, b);
+    write8bytes(b, a);
+    write8bytes(a, temp);
+    return;
 }
-void QuickSort(unsigned char *A,int low,int high)
+void BubbleSort(unsigned char *A,int n) // n=504
 {
-    if(low<high)
+    int flag=1,i,j,idx;
+    for (i = 0; i < 7 * 8 - 1; i++) // 56个元组，需要循环55次
     {
-        int pivotpos = Partition1(A,low,high);
-        // printf("index:%d", pivotpos);
-        QuickSort(A,low,pivotpos-8);
-        QuickSort(A,pivotpos+8,high);
+        flag = 1;
+        for (j = n; j > i*8; j -= 8)
+        {
+            if ((j-1)%65 == 0)  // 边界情况
+                idx = j - 8 - 9;
+            else
+                idx = j - 8;
+
+
+            if(read4bytes(&A[idx]) > read4bytes(&A[j]))
+            {
+                Swap(&A[idx],&A[j]);
+                flag=0;
+            }
+            if ((j-1)%65 == 0)  // 边界情况
+                j -= 9;
+        }
+            
+        if(flag)
+            return;
     }
 }
