@@ -1,0 +1,51 @@
+# depslib dependency file v1.0
+1672416240 source:d:\hgs-3-1\db\lab\db5\extmem-c\extmem.c
+	<stdlib.h>
+	<stdio.h>
+	"extmem.h"
+
+1308709046 d:\hgs-3-1\db\lab\db5\extmem-c\extmem.h
+
+1672482461 source:d:\hgs-3-1\db\lab\db5\extmem-c\lab5.c
+	"lab5.h"
+
+1672486716 source:d:\hgs-3-1\db\lab\db5\extmem-c\test.c
+	"def.h"
+
+1672472124 d:\hgs-3-1\db\lab\db5\extmem-c\lab5.c
+
+1672471674 d:\hgs-3-1\db\lab\db5\extmem-c\test.c
+	<stdlib.h>
+	<stdio.h>
+	"extmem.h"
+	"lab5.c"
+
+1672486354 d:\hgs-3-1\db\lab\db5\extmem-c\lab5.h
+	<stdlib.h>
+	<stdio.h>
+	<stdbool.h>
+	"extmem.h"
+
+1672482198 source:d:\hgs-3-1\db\lab\db5\extmem-c\lab5_util.c
+
+1672498649 source:d:\hgs-3-1\db\lab\db5\extmem-c\main.c
+	<stdlib.h>
+	<stdio.h>
+	"extmem.h"
+	"def.h"
+
+1672538385 source:d:\hgs-3-1\db\lab\db5\extmem-c\linearsearch.c
+	"def.h"
+
+1672539220 d:\hgs-3-1\db\lab\db5\extmem-c\def.h
+	<stdlib.h>
+	<stdio.h>
+	<stdbool.h>
+	"extmem.h"
+
+1672505482 source:d:\hgs-3-1\db\lab\db5\extmem-c\util.c
+	"def.h"
+
+1672537803 source:d:\hgs-3-1\db\lab\db5\extmem-c\tpmms.c
+	"def.h"
+
