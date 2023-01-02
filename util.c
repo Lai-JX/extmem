@@ -57,7 +57,7 @@ int findAddr(int addr, int n)
     for (int i = 0; i < n; i++)
     {   // 读取下一块号
         blk = readBlockFromDisk(addr, &buf);
-        addr = read4bytes(blk + 7 * 8);
+        addr = read4bytes(blk + NUM_PER_BLK * 8);
         freeBlockInBuffer(blk, &buf);
     }
     return addr;
@@ -101,7 +101,7 @@ void Swap(unsigned char *a,unsigned char *b)
 void BubbleSort(unsigned char *A,int n) // n=504
 {
     int flag=1,i,j,idx;
-    for (i = 0; i < 7 * 8 - 1; i++) // 56个元组，需要循环55次
+    for (i = 0; i < NUM_PER_BLK * 8 - 1; i++) // 56个元组，需要循环55次
     {
         flag = 1;
         for (j = n; j > i*8; j -= 8)
@@ -145,14 +145,14 @@ void printf1(int addr, int n)
 // 写入内存，满时保存旧块创建新快
 void writeToBlk(int *res_amount, int res_addr, unsigned char**res_blk, unsigned char* src)
 {
-    int res_idx = *res_amount % 7;               // 每个块存7条记录
+    int res_idx = *res_amount % NUM_PER_BLK;               // 每个块存7条记录
     // 内存块写满
     if (*res_amount !=0 && res_idx == 0 )
     {
         // 下一块号
-        int next = res_addr + *res_amount / 7;
+        int next = res_addr + *res_amount / NUM_PER_BLK;
         // 保存结果块的下一块号(便于链接)
-        write4bytes((*res_blk) + 8 * 7, next);
+        write4bytes((*res_blk) + 8 * NUM_PER_BLK, next);
         // 写回磁盘
         writeBlockToDisk(*res_blk, next-1, &buf);
         printf("注：结果写入磁盘：%d\n", next - 1);
@@ -173,7 +173,7 @@ int shiftPointer(int* set_ptr, int* visited_blk, int blk_num, unsigned char** bl
     {
         if (*visited_blk < blk_num-1)           // 读取下一块
         {
-            int next = read4bytes((*blk) + 7 * 8);
+            int next = read4bytes((*blk) + NUM_PER_BLK * 8);
 
             freeBlockInBuffer(*blk, &buf);
             *blk = readBlockFromDisk(next, &buf);

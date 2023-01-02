@@ -2,8 +2,6 @@
 
 int indexSearch(void)
 {
-
-
     printf("\n--------------------------------------\n");
     printf("基于索引的关系选择算法 S.C=128:");
     printf("\n--------------------------------------\n");
@@ -18,8 +16,6 @@ int indexSearch(void)
         perror("Buffer Initialization Failed!\n");
         return -1;
     }
-    // printf1(S_SORT_BLK_BEGIN, S_BLK_NUM);
-
 
     unsigned char *index_blk, *blk, *res_blk;
     int addr = 200,idx,val,C,j;
@@ -36,7 +32,7 @@ int indexSearch(void)
         {
             index_blk = readBlockFromDisk(addr, &buf);
             printf("读入索引块%d\n", addr);
-            addr = read4bytes(index_blk + 7 * 8);
+            addr = read4bytes(index_blk + NUM_PER_BLK * 8);
         }
 
         // 索引字段
@@ -91,7 +87,7 @@ int indexSearch(void)
             // 再搜索当前blk
             blk = readBlockFromDisk(data_addr, &buf);
             printf("读入数据块%d\n", data_addr);
-            while (j==7)        // 满足要求的元组可能占多块
+            while (j==NUM_PER_BLK)        // 满足要求的元组可能占多块
             {
                 for (j = 0; j < NUM_PER_BLK; j++)
                 {
@@ -99,44 +95,20 @@ int indexSearch(void)
 
                     C = read4bytes(blk + j * 8);
                     if (C==search_val){
-                        // idx = count % NUM_PER_BLK;
-                        // if (count!=0 && idx==0)
-                        // {
-                        //     // 下一块号
-                        //     next = res_addr + count / NUM_PER_BLK;
-                        //     // 保存结果块的下一块号(便于链接)
-                        //     write4bytes(res_blk + 8 * NUM_PER_BLK, next);
-                        //     // 写回磁盘
-                        //     writeBlockToDisk(res_blk, next-1, &buf);
-                        //     printf("注：结果写入磁盘：%d\n", next-1);
-                        //     // 申请缓冲区
-                        //     res_blk = getNewBlockInBuffer(&buf);
-                        // }
-                        // write8bytes(res_blk + idx * 8, blk + j * 8);
-                        // count++;
                         writeToBlk(&count, res_addr, &res_blk, blk + j * 8);
                         printf("(C=%d, D=%d) \n", C, read4bytes(blk + j * 8 + 4));
                     }
                     else
                         break;
                 }
-                if (j==7)   // 整个块均为满足要求的元组，则获取下一块
+                if (j==NUM_PER_BLK)   // 整个块均为满足要求的元组，则获取下一块
                 {
                     freeBlockInBuffer(blk, &buf);
                     printf("读入数据块%d\n", read4bytes(blk + j * 8));
                     blk = readBlockFromDisk(read4bytes(blk + j * 8), &buf);
                 }
             }
-            // 写回最后一个结果块
-            // if (count !=0)
-            // {
-            //     next = res_addr + count / NUM_PER_BLK;
-            //     if (count % 7 == 0)
-            //         next--;
-            //     writeBlockToDisk(res_blk, next, &buf);
-            //     printf("注：结果写入磁盘：%d\n\n", next);
-            // }
-            writeLastBlk(count, res_addr, res_blk,7);
+            writeLastBlk(count, res_addr, res_blk,NUM_PER_BLK);
             freeBlockInBuffer(blk, &buf);
             break;
         }
@@ -163,14 +135,14 @@ int createIndexBlk(int addr, int blk_num, int index_addr_begin)
     int count = 1;
     for (i = 0; i < blk_num; i++)
     {
-        idx = i % 7;
+        idx = i % NUM_PER_BLK;
         // 索引块写满
         if (i!=0 && idx==0)
         {
             // 保存下一块号
-            write4bytes(index_blk + 7 * 8, index_addr_begin + i / 7);
+            write4bytes(index_blk + NUM_PER_BLK * 8, index_addr_begin + i / NUM_PER_BLK);
             // 写回索引块
-            writeBlockToDisk(index_blk, index_addr_begin + i / 7 - 1, &buf);
+            writeBlockToDisk(index_blk, index_addr_begin + i / NUM_PER_BLK - 1, &buf);
             // 创建新的索引块
             index_blk = getNewBlockInBuffer(&buf);
             count++;
@@ -180,15 +152,15 @@ int createIndexBlk(int addr, int blk_num, int index_addr_begin)
         // 保存索引字段和块指针
         write4bytes(index_blk + idx * 8, read4bytes(blk));
         write4bytes(index_blk + idx * 8 + 4, addr);
-        addr = read4bytes(blk + 7 * 8);
+        addr = read4bytes(blk + NUM_PER_BLK * 8);
         // 释放当前数据块
         freeBlockInBuffer(blk, &buf);
     }
     // 写回最后一个索引块
     if (i !=0)
     {
-        int next = index_addr_begin + i / 7;
-        if (i % 7 == 0)
+        int next = index_addr_begin + i / NUM_PER_BLK;
+        if (i % NUM_PER_BLK == 0)
             next--;
         writeBlockToDisk(index_blk, next, &buf);
         // printf("注：结果写入磁盘：%d\n\n", next);

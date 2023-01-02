@@ -1,22 +1,6 @@
 
 #include "def.h"
 
-// int lab5_all(void)
-// {
-
-//     printf("ljx\n");
-//     /* Initialize the buffer */
-//     if (!initBuffer(520, 64, &buf))
-//     {
-//         perror("Buffer Initialization Failed!\n");
-//         return -1;
-//     }
-//     printf("data_begin:%p\n", buf.data);
-
-//     linearSearch();
-//     return 0;
-// }
-
 int linearSearch(void)
 {
     /* Initialize the buffer */
@@ -48,7 +32,7 @@ int linearSearch(void)
             return -1;
         }
         // 遍历7个元组
-        for (i = 0; i < 7; i++) //一个blk存7个元组加一个地址
+        for (i = 0; i < NUM_PER_BLK; i++) //一个blk存7个元组加一个地址
         {
             // 读取前4个字节
             C = read4bytes(blk + i * 8);
@@ -57,22 +41,6 @@ int linearSearch(void)
             // 是否为指定元组
             if (C == 128)
             {
-                // idx = amount % NUM_PER_BLK;
-                // // 内存块写满
-                // if (amount !=0 && idx == 0 )
-                // {
-                //     // 下一块号
-                //     next = result_addr + amount / NUM_PER_BLK;
-                //     // 保存结果块的下一块号(便于链接)
-                //     write4bytes(result_blk + 8 * NUM_PER_BLK, next);
-                //     // 写回磁盘
-                //     writeBlockToDisk(result_blk, next-1, &buf);
-                //     printf("注：结果写入磁盘：%d\n", next-1);
-                //     // 申请缓冲区
-                //     result_blk = getNewBlockInBuffer(&buf);
-                // }
-                // write8bytes(result_blk + 8 * idx, blk + i * 8);
-                // amount++;
                 writeToBlk(&amount, result_addr, &result_blk, blk + i * 8);
                 printf("(C=%d, D=%d) \n", C, D);
 
@@ -87,20 +55,10 @@ int linearSearch(void)
         count++;
     }
     // 写回最后一个结果块
-    // if (amount !=0)
-    // {
-    //     next = result_addr + amount / 7;
-    //     if (amount % NUM_PER_BLK == 0)
-    //         next--;
-    //     writeBlockToDisk(result_blk, next, &buf);
-    //     printf("注：结果写入磁盘：%d\n\n", next);
-    // }
-    writeLastBlk(amount, result_addr, result_blk,7);
-
+    writeLastBlk(amount, result_addr, result_blk,NUM_PER_BLK);
 
     printf("\n满足选择条件的元组一共有%d个\n\n", amount);
     printf("IO读写一共%d次\n\n",buf.numIO);
-    // printf1(60, 2);
     freeBuffer(&buf);
     return 0;
 }

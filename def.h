@@ -10,14 +10,14 @@
 /******************************/
 /* 宏定义 */
 /******************************/
-#define R_BLK_BEGIN 1
-#define S_BLK_BEGIN 17
-#define R_BLK_NUM 16
-#define S_BLK_NUM 32
-#define NUM_PER_BLK 7       // 一块有7个元组
+#define R_BLK_BEGIN 1           // 关系R起始块
+#define S_BLK_BEGIN 17          // 关系S起始块
+#define R_BLK_NUM 16            // 关系R占用块数
+#define S_BLK_NUM 32            // 关系S占用块数
+#define NUM_PER_BLK 7           // 一块有7个元组
 #define R_SORT_BLK_BEGIN 100    // 排序后的R的初始块号
 #define S_SORT_BLK_BEGIN 150    // 排序后的S的初始块号
-#define BLKS_PER_SET 8          // 每个子集的块数
+#define BLKS_PER_SET 8          // 排序中每个子集的块数
 
 /******************************/
 /* 全局变量 */
@@ -27,7 +27,6 @@ Buffer buf; /* A buffer */
 /******************************/
 /* 主要功能函数 */
 /******************************/
-// int lab5_all(void);
 int test(void);
 int linearSearch(void);
 int tpmms(void);
