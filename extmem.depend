@@ -28,7 +28,7 @@
 
 1672482198 source:d:\hgs-3-1\db\lab\db5\extmem-c\lab5_util.c
 
-1672593347 source:d:\hgs-3-1\db\lab\db5\extmem-c\main.c
+1672627452 source:d:\hgs-3-1\db\lab\db5\extmem-c\main.c
 	<stdlib.h>
 	<stdio.h>
 	"extmem.h"
@@ -37,7 +37,7 @@
 1672593892 source:d:\hgs-3-1\db\lab\db5\extmem-c\linearsearch.c
 	"def.h"
 
-1672584354 d:\hgs-3-1\db\lab\db5\extmem-c\def.h
+1672626521 d:\hgs-3-1\db\lab\db5\extmem-c\def.h
 	<stdlib.h>
 	<stdio.h>
 	<stdbool.h>
@@ -49,7 +49,7 @@
 1672564696 source:d:\hgs-3-1\db\lab\db5\extmem-c\tpmms.c
 	"def.h"
 
-1672593771 source:d:\hgs-3-1\db\lab\db5\extmem-c\indexsearch.c
+1672594155 source:d:\hgs-3-1\db\lab\db5\extmem-c\indexsearch.c
 	"def.h"
 
 1672585311 source:d:\hgs-3-1\db\lab\db5\extmem-c\sortmergejoin.c
@@ -59,5 +59,8 @@
 	"def.h"
 
 1672593330 source:d:\hgs-3-1\db\lab\db5\extmem-c\sortmergeunion.c
+	"def.h"
+
+1672627362 source:d:\hgs-3-1\db\lab\db5\extmem-c\sortmergedifference.c
 	"def.h"
 

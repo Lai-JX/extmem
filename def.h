@@ -34,6 +34,7 @@ int indexSearch(void);
 int sortMergeJoin(void);
 int sortMergeIntersection(void);
 int sortMergeUnion(void);
+int sortMergeDifference(void);
 
 /******************************/
 /*工具函数*/
