@@ -27,7 +27,7 @@ int sortMergeJoin()
     memset(visited_blk, 0, sizeof(visited_blk));
 
     int A_val,C_val;
-    
+
     // 申请一个块用于保存结果
     unsigned char *res_blk = getNewBlockInBuffer(&buf);
     int save_idx = 0;
@@ -65,105 +65,117 @@ int sortMergeJoin()
                 // printf("(%d,%d),(%d,%d)\n", read4bytes(blk[0] + set_ptr[0]), read4bytes(blk[0] + set_ptr[0]+ 4), read4bytes(blk[1] + set_ptr[1]), read4bytes(blk[1] + set_ptr[1] + 4));
 
                 res_amount++;
-                // 指针移动
-                if (set_ptr[0] < 48)
-                    set_ptr[0] += 8;
-                else
-                {
-                    if (visited_blk[0] < blk_num[0]-1)           // 读取下一块
-                    {
-                        int next = read4bytes(blk[0] + 7 * 8);
 
-                        freeBlockInBuffer(blk[0], &buf);
-                        blk[0] = readBlockFromDisk(next, &buf);
-                        visited_blk[0]++;
-                        set_ptr[0] = 0;
-                    }
-                    else
-                        break;        
-                }
+                // 指针移动
+                // if (set_ptr[0] < 48)
+                //     set_ptr[0] += 8;
+                // else
+                // {
+                //     if (visited_blk[0] < blk_num[0]-1)           // 读取下一块
+                //     {
+                //         int next = read4bytes(blk[0] + 7 * 8);
+
+                //         freeBlockInBuffer(blk[0], &buf);
+                //         blk[0] = readBlockFromDisk(next, &buf);
+                //         visited_blk[0]++;
+                //         set_ptr[0] = 0;
+                //     }
+                //     else
+                //         break;
+                // }
+                if(!shiftPointer(&set_ptr[0], &visited_blk[0], blk_num[0], &blk[0]))
+                    break;
                 A_val = read4bytes(blk[0] + set_ptr[0]);
                 C_val = read4bytes(blk[1] + set_ptr[1]);
             }
             // 回退
-            if (visited_blk[0] != save_addr)  // 若读取到别的块
-            {
-                freeBlockInBuffer(blk[0], &buf);
-                // printf("findaddr:%d\n", findAddr(R_BLK_BEGIN, save_addr));
-                blk[0] = readBlockFromDisk(findAddr(R_SORT_BLK_BEGIN,save_addr), &buf);
-                visited_blk[0] = save_addr;
-            }
-            set_ptr[0] = save_idx;
+            // if (visited_blk[0] != save_addr)  // 若读取到别的块
+            // {
+            //     freeBlockInBuffer(blk[0], &buf);
+            //     // printf("findaddr:%d\n", findAddr(R_BLK_BEGIN, save_addr));
+            //     blk[0] = readBlockFromDisk(findAddr(R_SORT_BLK_BEGIN,save_addr), &buf);
+            //     visited_blk[0] = save_addr;
+            // }
+            // set_ptr[0] = save_idx;
+            traceBack(&visited_blk[0], &blk[0], &set_ptr[0], save_idx, save_addr);
             // 指针移动
-            if (set_ptr[1] < 48)
-                set_ptr[1] += 8;
-            else
-            {
-                if (visited_blk[1] < blk_num[1]-1)           // 读取下一块
-                {
-                    int next = read4bytes(blk[1] + 7 * 8);
+            // if (set_ptr[1] < 48)
+            //     set_ptr[1] += 8;
+            // else
+            // {
+            //     if (visited_blk[1] < blk_num[1]-1)           // 读取下一块
+            //     {
+            //         int next = read4bytes(blk[1] + 7 * 8);
 
-                    freeBlockInBuffer(blk[1], &buf);
-                    blk[1] = readBlockFromDisk(next, &buf);
-                    visited_blk[1]++;
-                    set_ptr[1] = 0;
-                }
-                else
-                    break;        
-            }
+            //         freeBlockInBuffer(blk[1], &buf);
+            //         blk[1] = readBlockFromDisk(next, &buf);
+            //         visited_blk[1]++;
+            //         set_ptr[1] = 0;
+            //     }
+            //     else
+            //         break;
+            // }
+            if(!shiftPointer(&set_ptr[1], &visited_blk[1], blk_num[1], &blk[1]))
+                break;
         }
         else if (A_val > C_val)
         {
-            // 指针移动
-            if (set_ptr[1] < 48)
-                set_ptr[1] += 8;
-            else
-            {
-                if (visited_blk[1] < blk_num[1]-1)           // 读取下一块
-                {
-                    int next = read4bytes(blk[1] + 7 * 8);
+            // // 指针移动
+            // if (set_ptr[1] < 48)
+            //     set_ptr[1] += 8;
+            // else
+            // {
+            //     if (visited_blk[1] < blk_num[1]-1)           // 读取下一块
+            //     {
+            //         int next = read4bytes(blk[1] + 7 * 8);
 
-                    freeBlockInBuffer(blk[1], &buf);
-                    blk[1] = readBlockFromDisk(next, &buf);
-                    visited_blk[1]++;
-                    set_ptr[1] = 0;
-                }
-                else
-                    break;       
-            }
+            //         freeBlockInBuffer(blk[1], &buf);
+            //         blk[1] = readBlockFromDisk(next, &buf);
+            //         visited_blk[1]++;
+            //         set_ptr[1] = 0;
+            //     }
+            //     else
+            //         break;
+            // }
+            if(!shiftPointer(&set_ptr[1], &visited_blk[1], blk_num[1], &blk[1]))
+                break;
         }
         else
         {
             // 指针移动
-            if (set_ptr[0] < 48)
-                set_ptr[0] += 8;
-            else
-            {
-                if (visited_blk[0] < blk_num[0]-1)           // 读取下一块
-                {
-                    int next = read4bytes(blk[0] + 7 * 8);
+            // if (set_ptr[0] < 48)
+            //     set_ptr[0] += 8;
+            // else
+            // {
+            //     if (visited_blk[0] < blk_num[0]-1)           // 读取下一块
+            //     {
+            //         int next = read4bytes(blk[0] + 7 * 8);
 
-                    freeBlockInBuffer(blk[0], &buf);
-                    blk[0] = readBlockFromDisk(next, &buf);
-                    visited_blk[0]++;
-                    set_ptr[0] = 0;
-                }
-                else
-                    break;        
-            }
+            //         freeBlockInBuffer(blk[0], &buf);
+            //         blk[0] = readBlockFromDisk(next, &buf);
+            //         visited_blk[0]++;
+            //         set_ptr[0] = 0;
+            //     }
+            //     else
+            //         break;
+            // }
+            if(!shiftPointer(&set_ptr[0], &visited_blk[0], blk_num[0], &blk[0]))
+                break;
         }
     }
     // 写回最后一个结果块
-    if (res_amount !=0)
-    {
-        next = res_addr + res_amount / 3;
-        if (res_amount % 3 == 0)
-            next--;
-        writeBlockToDisk(res_blk, next, &buf);
-        printf("注：结果写入磁盘：%d\n\n", next);
-    }
-    printf("总共连接%d次\n", res_amount);
+    // if (res_amount !=0)
+    // {
+    //     next = res_addr + res_amount / 3;
+    //     if (res_amount % 3 == 0)
+    //         next--;
+    //     writeBlockToDisk(res_blk, next, &buf);
+    //     printf("注：结果写入磁盘：%d\n\n", next);
+    // }
+    writeLastBlk(res_amount, res_addr, res_blk,3);
+    printf("\n总共连接%d次\n", res_amount);
     // 释放占用的缓存块
     for (int i = 0; i < 2; i++)
         freeBlockInBuffer(blk[i], &buf);
+    return 0;
 }

@@ -8,12 +8,21 @@ int tpmms(void)
         perror("Buffer Initialization Failed!\n");
         return -1;
     }
-    // 对R进行排序
-    tpmms_(R_BLK_BEGIN, R_BLK_NUM, BLKS_PER_SET, R_SORT_BLK_BEGIN);    // 初始块号为R_BLK_BEGIN，块数为R_BLK_NUM，每个子集8块，结果块初始块号为100
-    // 对S进行排序
-    tpmms_(S_BLK_BEGIN, S_BLK_NUM, BLKS_PER_SET, S_SORT_BLK_BEGIN);    // 每个子集8块，结果块初始块号为150
+    printf("\n--------------------------------------\n");
+    printf("两阶段多路归并排序算法 ");
+    printf("\n--------------------------------------\n");
 
+    // 对R进行排序
+    printf("对R进行排序\n");
+    tpmms_(R_BLK_BEGIN, R_BLK_NUM, BLKS_PER_SET, R_SORT_BLK_BEGIN);    // 初始块号为R_BLK_BEGIN，块数为R_BLK_NUM，每个子集8块，结果块初始块号为100
+    printf("如上，关系R排序后输出到文件%d.blk到%d.blk。\n\n",R_SORT_BLK_BEGIN,R_SORT_BLK_BEGIN+R_BLK_NUM-1);
+
+    // 对S进行排序
+    printf("对S进行排序\n");
+    tpmms_(S_BLK_BEGIN, S_BLK_NUM, BLKS_PER_SET, S_SORT_BLK_BEGIN);    // 每个子集8块，结果块初始块号为150
+    printf("如上，关系S排序后输出到文件%d.blk到%d.blk。\n\n",S_SORT_BLK_BEGIN,S_SORT_BLK_BEGIN+S_BLK_NUM-1);
     freeBuffer(&buf);
+    return 0;
 }
 // 进行排序
 void tpmms_(int BLK_BEGIN, int BLK_NUM, int step, int res_addr_begin)
@@ -35,7 +44,7 @@ void tpmms_(int BLK_BEGIN, int BLK_NUM, int step, int res_addr_begin)
 
 
 // 将addr后面链接的set_num个块进行排序
-void tpmms_step1(int addr, int set_num)
+int tpmms_step1(int addr, int set_num)
 {
     if (set_num > buf.numAllBlk)
     {
@@ -69,6 +78,7 @@ void tpmms_step1(int addr, int set_num)
         addr = read4bytes(blk[count]+ 7 * 8);
         count++;
     }
+    return 0;
 }
 
 
@@ -92,7 +102,6 @@ void tpmms_step2(int addr, int set_num, int tol_set_num, int res_addr_begin)
     memset(visited_blk, 0, sizeof(visited_blk));
     // 申请一个块用于保存结果
     unsigned char *res_blk = getNewBlockInBuffer(&buf);
-    int res_idx = 0;
     int res_amount = 0;
     while (true)
     {
@@ -108,51 +117,55 @@ void tpmms_step2(int addr, int set_num, int tol_set_num, int res_addr_begin)
             }
         }
         // 写到内存，满时写回磁盘
-        res_idx = res_amount % NUM_PER_BLK;
-        
-        // 内存块写满
-        if (res_amount !=0 && res_idx == 0 )
-        {
-            write4bytes(res_blk + 8 * NUM_PER_BLK, res_addr_begin + res_amount / NUM_PER_BLK);
-            // 写回磁盘
-            writeBlockToDisk(res_blk, res_addr_begin + res_amount / NUM_PER_BLK - 1, &buf);
-            // 申请缓冲区
-            res_blk = getNewBlockInBuffer(&buf);
-        }
-        write8bytes(res_blk + 8 * res_idx, blk[min_idx] + set_ptr[min_idx]);
+        // res_idx = res_amount % NUM_PER_BLK;
 
-        res_amount++;
+        // // 内存块写满
+        // if (res_amount !=0 && res_idx == 0 )
+        // {
+        //     write4bytes(res_blk + 8 * NUM_PER_BLK, res_addr_begin + res_amount / NUM_PER_BLK);
+        //     // 写回磁盘
+        //     writeBlockToDisk(res_blk, res_addr_begin + res_amount / NUM_PER_BLK - 1, &buf);
+        //     // 申请缓冲区
+        //     res_blk = getNewBlockInBuffer(&buf);
+        // }
+        // write8bytes(res_blk + 8 * res_idx, blk[min_idx] + set_ptr[min_idx]);
+
+        // res_amount++;
+        writeToBlk(&res_amount, res_addr_begin, &res_blk, blk[min_idx] + set_ptr[min_idx]);
 
         // 最小值所在块的指针进行偏移
-        if (set_ptr[min_idx] < 48)
-            set_ptr[min_idx] += 8;
-        else
-        {
-            if (visited_blk[min_idx] < set_num-1)           // 读取下一块
-            {
-                int next = read4bytes(blk[min_idx] + 7 * 8);
+        // if (set_ptr[min_idx] < 48)
+        //     set_ptr[min_idx] += 8;
+        // else
+        // {
+        //     if (visited_blk[min_idx] < set_num-1)           // 读取下一块
+        //     {
+        //         int next = read4bytes(blk[min_idx] + 7 * 8);
 
-                freeBlockInBuffer(blk[min_idx], &buf);
-                blk[min_idx] = readBlockFromDisk(next, &buf);
-                visited_blk[min_idx]++;
-                set_ptr[min_idx] = 0;
-            }
-            else
-                write4bytes(blk[min_idx] + 48, 999);        // 设为最大，避免被选中
-        }
-            
+        //         freeBlockInBuffer(blk[min_idx], &buf);
+        //         blk[min_idx] = readBlockFromDisk(next, &buf);
+        //         visited_blk[min_idx]++;
+        //         set_ptr[min_idx] = 0;
+        //     }
+        //     else
+        //         write4bytes(blk[min_idx] + 48, 999);        // 设为最大，避免被选中
+        // }
+        if(!shiftPointer(&set_ptr[min_idx], &visited_blk[min_idx], set_num, &blk[min_idx]))
+            write4bytes(blk[min_idx] + 48, 999);        // 设为最大，避免被选中
+
         if (res_amount == set_num*NUM_PER_BLK*tol_set_num)
             break;
     }
     // 写回最后一个结果块
-    if (res_amount !=0)
-    {
-        if (res_amount % NUM_PER_BLK == 0)
-            writeBlockToDisk(res_blk, res_addr_begin + res_amount / NUM_PER_BLK - 1, &buf);
-        else
-            writeBlockToDisk(res_blk, res_addr_begin + res_amount / NUM_PER_BLK, &buf);
-    }
-    
+    // if (res_amount !=0)
+    // {
+    //     if (res_amount % NUM_PER_BLK == 0)
+    //         writeBlockToDisk(res_blk, res_addr_begin + res_amount / NUM_PER_BLK - 1, &buf);
+    //     else
+    //         writeBlockToDisk(res_blk, res_addr_begin + res_amount / NUM_PER_BLK, &buf);
+    // }
+    writeLastBlk(res_amount, res_addr_begin, res_blk,7);
+
     for (int i = 0; i < tol_set_num; i++)
         freeBlockInBuffer(blk[i], &buf);
 }

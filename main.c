@@ -7,14 +7,13 @@
 int main(int argc, char **argv)
 {
     // test();
-    // linearSearch();
-    // tpmms();
-    // indexSearch();
-    // sortMergeJoin();
-    // sortMergeIntersection();
-    // sortMergeUnion();
+    linearSearch();
+    tpmms();
+    indexSearch();
+    sortMergeJoin();
+    sortMergeIntersection();
+    sortMergeUnion();
     sortMergeDifference();
-    // printf1(801, 47);
     return 0;
 }
 

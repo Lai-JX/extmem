@@ -142,3 +142,72 @@ void printf1(int addr, int n)
     }
     
 }
+// 写入内存，满时保存旧块创建新快
+void writeToBlk(int *res_amount, int res_addr, unsigned char**res_blk, unsigned char* src)
+{
+    int res_idx = *res_amount % 7;               // 每个块存7条记录
+    // 内存块写满
+    if (*res_amount !=0 && res_idx == 0 )
+    {
+        // 下一块号
+        int next = res_addr + *res_amount / 7;
+        // 保存结果块的下一块号(便于链接)
+        write4bytes((*res_blk) + 8 * 7, next);
+        // 写回磁盘
+        writeBlockToDisk(*res_blk, next-1, &buf);
+        printf("注：结果写入磁盘：%d\n", next - 1);
+        // 申请缓冲区
+        *res_blk = getNewBlockInBuffer(&buf);
+    }
+    // printf("(C=%d, D=%d) \n", C_val, D_val);
+    write8bytes(*res_blk+res_idx*8, src);
+    (*res_amount)++;
+}
+// 指针移动
+int shiftPointer(int* set_ptr, int* visited_blk, int blk_num, unsigned char** blk)
+{
+    // 指针移动
+    if (*set_ptr < 48)
+        *set_ptr += 8;
+    else
+    {
+        if (*visited_blk < blk_num-1)           // 读取下一块
+        {
+            int next = read4bytes((*blk) + 7 * 8);
+
+            freeBlockInBuffer(*blk, &buf);
+            *blk = readBlockFromDisk(next, &buf);
+            (*visited_blk)++;
+            *set_ptr = 0;
+        }
+        else
+        {
+            return 0;
+        }       
+    }
+    return 1;
+}
+// 将最后一块写回磁盘
+void writeLastBlk(int res_amount, int res_addr, unsigned char * res_blk, int round)
+{
+    if (res_amount !=0)
+    {
+        int next = res_addr + res_amount / round;
+        if (res_amount % round == 0)
+            next--;
+        writeBlockToDisk(res_blk, next, &buf);
+        printf("注：结果写入磁盘：%d\n", next);
+    }
+}
+// 指针回退
+void traceBack(int* visited_blk, unsigned char** blk, int* set_ptr, int save_idx, int save_addr)
+{
+    if (*visited_blk != save_addr)  // 若读取到别的块
+    {
+        freeBlockInBuffer(*blk, &buf);
+        // printf("findaddr:%d\n", findAddr(R_BLK_BEGIN, save_addr));
+        *blk = readBlockFromDisk(findAddr(R_SORT_BLK_BEGIN,save_addr), &buf);
+        *visited_blk = save_addr;
+    }
+    *set_ptr = save_idx;
+}
